@@ -1,0 +1,29 @@
+﻿# Environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Backend
+backend/target/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# Windows
+Thumbs.db
+.DS_Store
+
+# Visual Studio local files
+.vs/
+
+# Local development and backup files
+backend/startup-error.txt
+backend/src/main/java/com/sportshall/booking/EmailTestController.java
+frontend/src/OriginalAppBackup.jsx

@@ -1,0 +1,553 @@
+
+@import "tailwindcss";
+
+:root {
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  color: #f1f5f9;
+  background: #030713;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; min-width: 320px; min-height: 100%; }
+body { min-height: 100vh; }
+button { font: inherit; cursor: pointer; }
+button:focus-visible { outline: 2px solid #60a5fa; outline-offset: 4px; }
+::selection { background: #2563eb88; color: white; }
+
+.app-root { min-height: 100vh; background: #030713; }
+
+.intro-screen {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(ellipse at 50% 53%, #102a55 0%, #071329 38%, #030713 78%);
+}
+.arena-lights {
+  position: absolute; inset: 0; z-index: -3; pointer-events: none;
+  background:
+    radial-gradient(ellipse at 8% 12%, #60a5fa45, transparent 22%),
+    radial-gradient(ellipse at 92% 12%, #38bdf83b, transparent 24%),
+    radial-gradient(ellipse at 50% 45%, #1d4ed82b, transparent 48%);
+}
+.arena-haze {
+  position: absolute; inset: 15% -15% 0; z-index: -2; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 70%, #3b82f622, transparent 60%);
+  filter: blur(35px);
+}
+.court-floor {
+  position: absolute;
+  z-index: -1;
+  left: -25%; right: -25%; bottom: -26%;
+  height: 57%;
+  transform: perspective(390px) rotateX(57deg);
+  transform-origin: top center;
+  border-top: 2px solid #60a5fa88;
+  background:
+    linear-gradient(90deg, transparent 49.8%, #60a5fa6b 50%, transparent 50.2%),
+    linear-gradient(0deg, transparent 49.8%, #60a5fa55 50%, transparent 50.2%),
+    repeating-linear-gradient(90deg, transparent 0 16.5%, #60a5fa45 16.6% 16.75%, transparent 16.85% 33.3%);
+  mask-image: linear-gradient(to bottom, #000, transparent 90%);
+}
+.court-midline {
+  position: absolute; left: 0; right: 0; top: 45%; height: 1px;
+  background: #60a5fa6b;
+}
+.court-box {
+  position: absolute; top: 13%; bottom: 15%; width: 26%;
+  border: 1px solid #60a5fa55;
+}
+.court-box-left { left: 24%; }
+.court-box-right { right: 24%; }
+.arena-net {
+  position: absolute; top: 39%; left: 27%; right: 27%; height: 1px;
+  background: linear-gradient(90deg, transparent, #bfdbfe9c, transparent);
+  opacity: .6;
+}
+.arena-net span {
+  position: absolute; left: 0; right: 0; top: 0; height: 18px;
+  background: repeating-linear-gradient(90deg, transparent 0 8px, #93c5fd22 9px 10px);
+  border-top: 1px solid #93c5fd45;
+  border-bottom: 1px solid #93c5fd30;
+}
+
+.intro-top, .intro-bottom {
+  position: relative; z-index: 5;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 24px clamp(18px, 5vw, 76px);
+}
+.intro-brand, .brand-icon {
+  font-size: 26px; font-weight: 900; letter-spacing: -2px; color: #fff;
+}
+.intro-brand span, .brand-icon span { color: #60a5fa; }
+.intro-caption, .intro-bottom > span {
+  color: #91a6c9; font-size: 9px; font-weight: 800; letter-spacing: 2.5px;
+}
+.skip-button, .replay-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 15px; color: #dbeafe; font-size: 12px;
+  border: 1px solid #93c5fd40; border-radius: 999px;
+  background: #0b173a99; backdrop-filter: blur(15px);
+  transition: background .2s, border-color .2s;
+}
+.skip-button:hover, .replay-button:hover {
+  background: #2563eb45; border-color: #60a5fa;
+}
+.intro-center {
+  position: relative; flex: 1; min-height: 530px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 35px 20px 65px; text-align: center;
+}
+.opening-copy { color: #dbeafe; }
+.opening-dot {
+  width: 7px; height: 7px; margin: 0 auto 24px; border-radius: 50%;
+  background: #38bdf8; box-shadow: 0 0 25px #38bdf8;
+  animation: pulse 1.7s ease-in-out infinite alternate;
+}
+.opening-copy p { margin: 0 0 12px; font-size: 13px; letter-spacing: 6px; font-weight: 800; }
+.opening-copy span { color: #9fb6d9; font-size: 9px; letter-spacing: 2px; }
+.player-stage {
+  position: relative; width: min(390px, 72vw);
+  transform-origin: center bottom;
+}
+.player-art {
+  display: block; width: 100%; height: auto; overflow: visible;
+  filter: drop-shadow(0 14px 20px #0009) drop-shadow(0 0 24px #38bdf833);
+}
+.player-shadow {
+  position: absolute; bottom: 2%; left: 20%; width: 60%; height: 8%;
+  border-radius: 50%; background: #3b82f688; filter: blur(23px);
+}
+.player-body-motion { position: relative; z-index: 2; }
+.flying-shuttle {
+  position: absolute; z-index: 5; right: -10%; top: 20%;
+  width: 72px; filter: drop-shadow(0 0 22px #93c5fd);
+}
+.smash-flash {
+  position: absolute; z-index: 1; right: -4%; top: 15%;
+  width: 100px; height: 100px; border-radius: 50%;
+  background: #bfdbfe; filter: blur(30px);
+}
+.smash-streak {
+  position: absolute; z-index: 3; top: 34%; right: -20%;
+  width: 80%; height: 3px; transform-origin: right;
+  background: linear-gradient(90deg, transparent, #60a5fa, #fff);
+  box-shadow: 0 0 20px #38bdf8;
+}
+
+.title-reveal { position: relative; z-index: 4; padding: 10px; }
+.eyebrow { color: #60a5fa; font-size: 9px; letter-spacing: 3px; font-weight: 900; }
+.title-reveal h1 {
+  margin: 12px 0 0; font-size: clamp(40px, 7vw, 82px);
+  line-height: .98; letter-spacing: -3px; font-weight: 950;
+  color: #f8fafc; text-shadow: 0 0 38px #3b82f640;
+}
+.title-reveal h2 {
+  margin: 9px 0 16px; font-size: clamp(17px, 3.4vw, 36px);
+  line-height: 1.1; letter-spacing: 1px; font-weight: 900;
+  background: linear-gradient(90deg, #dbeafe, #60a5fa, #c4b5fd);
+  color: transparent; background-clip: text; -webkit-background-clip: text;
+}
+.title-reveal p { color: #9aabc9; font-size: 13px; letter-spacing: 1px; }
+
+.loading-panel { width: min(440px, 88vw); margin-top: 10px; }
+.sports-orbit {
+  position: relative; width: 190px; height: 190px;
+  margin: 0 auto 24px; display: grid; place-items: center;
+}
+.orbit-ring {
+  position: absolute; inset: 9px; border-radius: 50%;
+  border: 1px solid #60a5fa88;
+  box-shadow: 0 0 25px #2563eb28, inset 0 0 24px #2563eb18;
+}
+.orbit-ring::before {
+  content: ""; position: absolute; inset: 15px; border: 1px dashed #a78bfa60; border-radius: 50%;
+}
+.orbit-ring-inner { inset: 34px; border-style: solid; border-color: #60a5fa32; }
+.orbit-rotator {
+  position: absolute; inset: 0; border-radius: 50%;
+}
+.orbit-sport {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-start; justify-content: center;
+}
+.orbit-sport span {
+  display: grid; place-items: center; width: 42px; height: 42px;
+  border-radius: 50%; background: #08162e; border: 1px solid #60a5fa55;
+  box-shadow: 0 0 20px #3b82f633; font-size: 24px;
+  transform: rotate(calc(var(--angle) * -1));
+}
+.orbit-core {
+  display: grid; place-items: center; width: 54px; height: 54px;
+  border-radius: 17px; color: white; font-size: 18px; font-weight: 950;
+  letter-spacing: -1px; background: linear-gradient(145deg, #2563eb, #6d28d9);
+  border: 1px solid #93c5fd; box-shadow: 0 0 32px #3b82f666;
+}
+.orbit-core span { color: #bfdbfe; }
+.loading-heading {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 12px;
+}
+.loading-heading span { color: #9cb0d1; font-size: 9px; letter-spacing: 1.8px; font-weight: 800; }
+.loading-heading strong { color: #dbeafe; font-size: 15px; }
+.progress-track {
+  height: 7px; overflow: hidden; border-radius: 99px;
+  background: #14213a; border: 1px solid #60a5fa55;
+  box-shadow: 0 0 20px #2563eb20;
+}
+.progress-fill {
+  height: 100%; border-radius: inherit;
+  background: linear-gradient(90deg, #2563eb, #38bdf8, #c4b5fd);
+  box-shadow: 0 0 18px #38bdf8;
+}
+.loading-note { color: #a8bad7; font-size: 11px; margin: 14px 0 20px; }
+.sports-labels {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 10px 15px; color: #a4b4d0; font-size: 10px;
+}
+.sports-labels span { white-space: nowrap; }
+
+.ready-message { margin-top: 15px; }
+.ready-check {
+  display: grid; place-items: center; width: 70px; height: 70px;
+  margin: auto; border-radius: 50%; color: #67e8f9;
+  border: 2px solid #22d3ee; font-size: 42px;
+  box-shadow: 0 0 30px #22d3ee55, inset 0 0 25px #22d3ee15;
+}
+.ready-message h2 {
+  color: #dbeafe; margin: 24px 0 12px;
+  font-size: clamp(22px, 4vw, 38px); letter-spacing: -1px;
+}
+.ready-message p { color: #67e8f9; font-size: 10px; letter-spacing: 5px; }
+.intro-bottom { color: #7185a9; font-size: 9px; }
+.intro-bottom span:last-child { display: inline-flex; align-items: center; gap: 7px; }
+
+.portal-screen {
+  position: relative; min-height: 100vh; overflow: hidden;
+  background:
+    radial-gradient(ellipse at 15% 38%, #12336a55, transparent 42%),
+    radial-gradient(ellipse at 88% 70%, #4c1d9530, transparent 40%),
+    #070b17;
+}
+.portal-screen::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .18;
+  background-image: linear-gradient(#94a3b810 1px, transparent 1px), linear-gradient(90deg, #94a3b810 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, black, transparent 90%);
+}
+.portal-header {
+  position: relative; z-index: 1; display: flex; align-items: center;
+  justify-content: space-between; padding: 24px clamp(20px, 6vw, 90px);
+  border-bottom: 1px solid #ffffff0c;
+}
+.brand-lockup { display: flex; align-items: center; gap: 12px; }
+.brand-lockup strong { display: block; font-size: 12px; letter-spacing: 2px; }
+.brand-lockup small { display: block; margin-top: 4px; color: #8292b2; font-size: 9px; letter-spacing: 1.5px; }
+.portal-content {
+  position: relative; z-index: 1; width: min(1040px, calc(100% - 40px));
+  margin: auto; padding: 65px 0 60px;
+}
+.portal-heading { text-align: center; margin-bottom: 42px; }
+.portal-heading h1 {
+  margin: 17px 0; font-size: clamp(42px, 6vw, 72px);
+  line-height: 1.02; letter-spacing: -3px; font-weight: 900;
+}
+.portal-heading h1 span { color: #60a5fa; }
+.portal-heading p { color: #9aa9c3; font-size: 14px; line-height: 1.7; }
+.login-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.login-card {
+  position: relative; isolation: isolate; overflow: hidden;
+  padding: 31px; border: 1px solid #ffffff19; border-radius: 22px;
+  background: linear-gradient(140deg, #ffffff0d, #ffffff04);
+  backdrop-filter: blur(20px); box-shadow: 0 25px 80px #00000024;
+}
+.student-card { border-color: #60a5fa45; }
+.admin-card { border-color: #a78bfa45; }
+.card-icon {
+  display: grid; place-items: center; width: 53px; height: 53px;
+  border-radius: 15px; margin-bottom: 27px;
+}
+.student-icon { color: #93c5fd; background: #2563eb25; border: 1px solid #60a5fa30; }
+.admin-icon { color: #c4b5fd; background: #7c3aed25; border: 1px solid #a78bfa30; }
+.card-kicker { color: #8da3c9; font-size: 9px; letter-spacing: 2px; font-weight: 800; }
+.login-card h2 { margin: 12px 0; font-size: 27px; letter-spacing: -.6px; }
+.login-card > p { position: relative; z-index: 1; min-height: 66px; max-width: 390px; color: #9baac2; font-size: 13px; line-height: 1.8; }
+.portal-action {
+  position: relative; z-index: 1; width: 100%; display: flex; align-items: center;
+  justify-content: space-between; margin-top: 23px; padding: 14px 16px;
+  border: 1px solid #60a5fa45; border-radius: 11px; color: white;
+  background: linear-gradient(100deg, #2563eb, #3b82f6);
+  font-size: 13px; font-weight: 700; transition: filter .2s, transform .2s;
+}
+.portal-action:hover { filter: brightness(1.15); transform: translateY(-1px); }
+.admin-action { background: linear-gradient(100deg, #6d28d9, #7c3aed); border-color: #a78bfa55; }
+.card-footer { position: relative; z-index: 1; margin-top: 22px; color: #8292b2; font-size: 11px; }
+.card-footer button { color: #93c5fd; background: none; border: none; padding: 0 0 0 4px; font-size: inherit; }
+.card-footer button:hover { text-decoration: underline; }
+.card-decoration {
+  position: absolute; z-index: -1; width: 170px; height: 170px;
+  right: -75px; top: -85px; border-radius: 50%; filter: blur(2px); opacity: .6;
+}
+.student-decoration { background: #2563eb25; box-shadow: 0 0 90px 40px #2563eb12; }
+.admin-decoration { background: #7c3aed25; box-shadow: 0 0 90px 40px #7c3aed12; }
+.portal-footer {
+  position: relative; display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 20px clamp(20px, 6vw, 90px);
+  border-top: 1px solid #ffffff0c; color: #64748b; font-size: 9px; letter-spacing: 1.2px;
+}
+
+@keyframes pulse {
+  from { opacity: .4; transform: scale(.85); }
+  to { opacity: 1; transform: scale(1.2); }
+}
+
+@media (max-width: 650px) {
+  .intro-top, .intro-bottom { padding: 17px; }
+  .intro-caption { display: none; }
+  .intro-center { min-height: 500px; padding: 30px 14px 50px; }
+  .player-stage { width: min(310px, 78vw); }
+  .title-reveal h1 { letter-spacing: -1.8px; }
+  .title-reveal h2 { letter-spacing: 0; }
+  .eyebrow { font-size: 8px; letter-spacing: 1.6px; }
+  .intro-bottom > span { font-size: 8px; letter-spacing: .5px; }
+  .sports-orbit { width: 155px; height: 155px; }
+  .orbit-sport span { width: 35px; height: 35px; font-size: 20px; }
+  .loading-heading span { font-size: 8px; letter-spacing: 1px; }
+  .portal-header { padding: 18px 20px; }
+  .portal-content { padding-top: 48px; }
+  .portal-heading { margin-bottom: 30px; }
+  .portal-heading h1 { letter-spacing: -2px; }
+  .login-cards { grid-template-columns: 1fr; }
+  .login-card { padding: 25px; }
+  .login-card > p { min-height: auto; }
+  .portal-footer { flex-wrap: wrap; justify-content: center; text-align: center; }
+  .portal-footer span:last-child { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; }
+}
+
+/* =========================================
+   CINEMATIC BADMINTON PLAYER ENTRANCE UPGRADE
+   Paste at the END of src/index.css
+   ========================================= */
+
+/* Cinematic camera framing */
+.intro-screen {
+  perspective: 1100px;
+  transform-style: preserve-3d;
+}
+
+.intro-screen::before {
+  content: "";
+  position: absolute;
+  z-index: 6;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 43%, transparent 25%, #02040bb0 100%),
+    linear-gradient(180deg, #02040b88, transparent 23%, transparent 75%, #02040bcc);
+  opacity: .85;
+}
+
+/* Dramatic backlight behind the athlete */
+.player-stage::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 135%;
+  height: 125%;
+  left: -17%;
+  top: -10%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    #38bdf866 0%,
+    #2563eb30 32%,
+    #7c3aed18 53%,
+    transparent 72%
+  );
+  filter: blur(28px);
+  animation: cinematicAura 2.8s ease-in-out infinite alternate;
+}
+
+/* Floor light under the player */
+.player-stage::after {
+  content: "";
+  position: absolute;
+  bottom: 1%;
+  left: -30%;
+  width: 160%;
+  height: 18%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #38bdf84d, #2563eb17 42%, transparent 72%);
+  filter: blur(18px);
+  transform: perspective(250px) rotateX(45deg);
+  animation: floorLight 1.5s ease-in-out infinite alternate;
+}
+
+/* More dimensional athlete lighting */
+.player-art {
+  filter:
+    drop-shadow(0 20px 18px #000b)
+    drop-shadow(0 0 14px #38bdf833)
+    drop-shadow(0 0 42px #2563eb25);
+  transform-origin: 50% 85%;
+  backface-visibility: hidden;
+}
+
+.player-run .player-art {
+  filter:
+    drop-shadow(-12px 12px 5px #0006)
+    drop-shadow(0 0 28px #38bdf866);
+}
+
+/* Speed streaks appear during the approach */
+.player-run::before {
+  background:
+    linear-gradient(105deg, transparent 15%, #60a5fa55 48%, transparent 70%),
+    radial-gradient(ellipse, #38bdf866, transparent 70%);
+  animation: approachEnergy 1.15s ease-in-out infinite;
+}
+
+.player-run::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 15%;
+  left: -50%;
+  width: 200%;
+  height: 65%;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    105deg,
+    transparent 0 35px,
+    #93c5fd12 36px 38px,
+    transparent 39px 72px
+  );
+  mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+  animation: speedLines .65s linear infinite;
+}
+
+/* Hold the tension before the smash */
+.player-windup .player-art {
+  filter:
+    drop-shadow(0 0 20px #60a5fa88)
+    drop-shadow(0 0 55px #2563eb66)
+    drop-shadow(0 18px 20px #000a);
+}
+
+.player-windup::before {
+  background: radial-gradient(ellipse, #60a5fa55, #7c3aed22 40%, transparent 72%);
+  animation: powerCharge .65s ease-in-out infinite alternate;
+}
+
+/* Screen impact: a quick camera jolt */
+.intro-screen.phase-smash {
+  animation: impactCamera .48s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.intro-screen.phase-smash .arena-lights {
+  opacity: 1;
+  filter: brightness(1.9);
+}
+
+/* Flash the court and arena on impact */
+.intro-screen.phase-smash .court-floor {
+  filter: brightness(2.4);
+}
+
+.intro-screen.phase-smash .arena-haze {
+  background: radial-gradient(ellipse at 50% 45%, #bfdbfe77, #3b82f833 35%, transparent 70%);
+}
+
+/* Make the shuttlecock feel like it is rushing at the lens */
+.flying-shuttle {
+  width: 84px;
+  filter:
+    drop-shadow(0 0 10px white)
+    drop-shadow(0 0 25px #38bdf8)
+    drop-shadow(0 0 55px #60a5fa);
+}
+
+.phase-smash .flying-shuttle::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 35%;
+  right: 45%;
+  width: 180px;
+  height: 4px;
+  transform: rotate(-28deg);
+  transform-origin: right;
+  background: linear-gradient(90deg, transparent, #60a5fa66, #e0f2fe);
+  filter: blur(3px);
+}
+
+/* Screen-edge speed blur during the hit */
+.phase-smash .intro-center::after {
+  content: "";
+  position: absolute;
+  z-index: 8;
+  inset: -10%;
+  pointer-events: none;
+  background: radial-gradient(ellipse, transparent 30%, #bfdbfe25 65%, #02040b99 100%);
+  animation: impactVignette .7s ease-out both;
+}
+
+/* Cinematic light and movement */
+@keyframes cinematicAura {
+  from { transform: scale(.85); opacity: .5; }
+  to { transform: scale(1.18); opacity: 1; }
+}
+
+@keyframes floorLight {
+  from { opacity: .45; transform: perspective(250px) rotateX(45deg) scaleX(.8); }
+  to { opacity: 1; transform: perspective(250px) rotateX(45deg) scaleX(1.15); }
+}
+
+@keyframes approachEnergy {
+  0% { transform: scale(.65); opacity: .2; }
+  65% { transform: scale(1.1); opacity: .9; }
+  100% { transform: scale(1.25); opacity: .35; }
+}
+
+@keyframes speedLines {
+  from { transform: translateX(-7%) skewX(-12deg); opacity: .2; }
+  to { transform: translateX(7%) skewX(-12deg); opacity: .85; }
+}
+
+@keyframes powerCharge {
+  from { opacity: .35; transform: scale(.85); }
+  to { opacity: 1; transform: scale(1.12); }
+}
+
+@keyframes impactCamera {
+  0% { transform: translate(0, 0); }
+  18% { transform: translate(-5px, 3px); }
+  35% { transform: translate(5px, -3px); }
+  52% { transform: translate(-3px, -1px); }
+  70% { transform: translate(2px, 2px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes impactVignette {
+  0% { opacity: 0; }
+  18% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player-stage::before,
+  .player-stage::after,
+  .player-run::before,
+  .player-run::after {
+    animation: none !important;
+  }
+}
